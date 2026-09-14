@@ -3,6 +3,10 @@
    ============================================================ */
 
 
+/* ============================================================
+   SUPABASE
+   ============================================================ */
+
 const SUPABASE_URL =
     "https://swkmyytlojkhcysmztlx.supabase.co";
 
@@ -64,6 +68,75 @@ function formatDate(dateString) {
 
 
 /* ============================================================
+   TIME CONVERSION
+   ============================================================ */
+
+
+function convertTo24Hour(timeString) {
+
+    if (!timeString) {
+        return "00:00:00";
+    }
+
+
+    const time =
+        timeString
+            .trim()
+            .toUpperCase();
+
+
+    const match =
+        time.match(
+            /^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/
+        );
+
+
+    if (!match) {
+
+        return "00:00:00";
+
+    }
+
+
+    let hour =
+        Number(match[1]);
+
+
+    const minute =
+        Number(match[2]);
+
+
+    const period =
+        match[3];
+
+
+    if (
+        period === "PM" &&
+        hour !== 12
+    ) {
+
+        hour += 12;
+
+    }
+
+
+    if (
+        period === "AM" &&
+        hour === 12
+    ) {
+
+        hour = 0;
+
+    }
+
+
+    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+
+}
+
+
+
+/* ============================================================
    FOOTER
    ============================================================ */
 
@@ -111,26 +184,13 @@ async function loadRides() {
         </div>`;
 
 
-    const today =
-        new Date()
-            .toISOString()
-            .split("T")[0];
-
-
     const {
         data,
         error
     } =
         await supabaseClient
             .from("rides")
-            .select("*")
-            .gte("ride_date", today)
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
+            .select("*");
 
 
     if (error) {
@@ -163,13 +223,73 @@ async function loadRides() {
     }
 
 
-    if (!data || data.length === 0) {
+    const now =
+        new Date();
+
+
+    const upcomingRides =
+        (data || [])
+            .filter(ride => {
+
+                if (
+                    ride.status !==
+                    "active"
+                ) {
+
+                    return false;
+
+                }
+
+
+                const rideDateTime =
+                    new Date(
+                        `${ride.ride_date}T${convertTo24Hour(
+                            ride.ride_time
+                        )}`
+                    );
+
+
+                return (
+                    !isNaN(
+                        rideDateTime.getTime()
+                    ) &&
+                    rideDateTime >= now
+                );
+
+            })
+            .sort((a, b) => {
+
+                const dateA =
+                    new Date(
+                        `${a.ride_date}T${convertTo24Hour(
+                            a.ride_time
+                        )}`
+                    );
+
+
+                const dateB =
+                    new Date(
+                        `${b.ride_date}T${convertTo24Hour(
+                            b.ride_time
+                        )}`
+                    );
+
+
+                return dateA - dateB;
+
+            });
+
+
+    if (
+        upcomingRides.length ===
+        0
+    ) {
 
         ridesList.innerHTML =
             `<div class="empty-state">
 
                 <h3>
-                    No rides yet.
+                    No upcoming rides.
                 </h3>
 
                 <p>
@@ -191,9 +311,10 @@ async function loadRides() {
 
 
     ridesList.innerHTML =
-        data
+        upcomingRides
             .map(
-                ride => createRideCard(ride)
+                ride =>
+                    createRideCard(ride)
             )
             .join("");
 
@@ -212,9 +333,11 @@ async function loadRides() {
 function createRideCard(ride) {
 
     const mode =
-        ride.travel_mode === "self-drive"
+        ride.travel_mode ===
+        "self-drive"
             ? "🚗 Self-drive"
-            : ride.travel_mode === "auto"
+            : ride.travel_mode ===
+              "auto"
                 ? "🛺 Auto"
                 : "🚕 Cab";
 
@@ -241,7 +364,9 @@ function createRideCard(ride) {
                     </span>
 
                     <strong>
-                        ${escapeHtml(ride.from_location)}
+                        ${escapeHtml(
+                            ride.from_location
+                        )}
                     </strong>
 
                 </div>
@@ -259,7 +384,9 @@ function createRideCard(ride) {
                     </span>
 
                     <strong>
-                        ${escapeHtml(ride.to_location)}
+                        ${escapeHtml(
+                            ride.to_location
+                        )}
                     </strong>
 
                 </div>
@@ -271,17 +398,23 @@ function createRideCard(ride) {
             <div class="ride-details">
 
                 <span>
-                    📅 ${formatDate(ride.ride_date)}
+                    📅 ${formatDate(
+                        ride.ride_date
+                    )}
                 </span>
 
 
                 <span>
-                    🕐 ${escapeHtml(ride.ride_time)}
+                    🕐 ${escapeHtml(
+                        ride.ride_time
+                    )}
                 </span>
 
 
                 <span>
-                    👥 ${escapeHtml(ride.seats)} seats
+                    👥 ${escapeHtml(
+                        ride.available_seats
+                    )} seats
                 </span>
 
 
@@ -295,27 +428,48 @@ function createRideCard(ride) {
 
             <div class="ride-bottom">
 
-                <div>
 
-                    <strong>
+                <div class="ride-poster">
+
+                    <strong class="ride-price">
                         ${cost}
                     </strong>
 
 
-                    <span class="organizer">
-                        ${escapeHtml(ride.name)}
+                    <span class="posted-by">
+                        Posted by
+                        <strong>
+                            ${escapeHtml(
+                                ride.organizer_name
+                            )}
+                        </strong>
                     </span>
 
                 </div>
 
 
+
                 <button
                     type="button"
                     class="whatsapp-btn"
-                    data-ride-id="${escapeHtml(ride.id)}"
+                    data-ride-id="${escapeHtml(
+                        ride.id
+                    )}"
+                    data-from="${escapeHtml(
+                        ride.from_location
+                    )}"
+                    data-to="${escapeHtml(
+                        ride.to_location
+                    )}"
+                    data-date="${escapeHtml(
+                        formatDate(
+                            ride.ride_date
+                        )
+                    )}"
                 >
                     WhatsApp →
                 </button>
+
 
             </div>
 
@@ -351,6 +505,22 @@ function setupWhatsAppButtons() {
                     button.dataset.rideId;
 
 
+                const from =
+                    button.dataset.from;
+
+
+                const to =
+                    button.dataset.to;
+
+
+                const rideDate =
+                    button.dataset.date;
+
+
+                const message =
+                    `Hey! I saw your Carpool ride from ${from} to ${to} on ${rideDate} and I'm interested. Is a seat still available?`;
+
+
                 const {
                     data,
                     error
@@ -369,9 +539,11 @@ function setupWhatsAppButtons() {
 
                     console.error(error);
 
+
                     alert(
                         "Couldn't open WhatsApp. Please try again."
                     );
+
 
                     return;
 
@@ -380,10 +552,149 @@ function setupWhatsAppButtons() {
 
                 if (data) {
 
+                    const whatsappUrl =
+                        `${data}${data.includes("?") ? "&" : "?"}text=${encodeURIComponent(
+                            message
+                        )}`;
+
+
                     window.open(
-                        data,
+                        whatsappUrl,
                         "_blank"
                     );
+
+                }
+
+            }
+        );
+
+    });
+
+}
+
+
+
+/* ============================================================
+   LOCATION SUGGESTIONS
+   ============================================================ */
+
+function setupLocationSuggestions() {
+
+    const fields =
+        document.querySelectorAll(
+            ".location-field"
+        );
+
+
+    fields.forEach(field => {
+
+        const input =
+            field.querySelector(
+                "input"
+            );
+
+
+        const suggestions =
+            field.querySelector(
+                ".location-suggestions"
+            );
+
+
+        if (
+            !input ||
+            !suggestions
+        ) {
+
+            return;
+
+        }
+
+
+        /* SHOW DROPDOWN */
+
+        input.addEventListener(
+            "focus",
+            () => {
+
+                suggestions.style.display =
+                    "block";
+
+            }
+        );
+
+
+        input.addEventListener(
+            "click",
+            () => {
+
+                suggestions.style.display =
+                    "block";
+
+            }
+        );
+
+
+        input.addEventListener(
+            "input",
+            () => {
+
+                suggestions.style.display =
+                    "block";
+
+            }
+        );
+
+
+        /* SELECT LOCATION */
+
+        const options =
+            suggestions.querySelectorAll(
+                ".location-option"
+            );
+
+
+        options.forEach(option => {
+
+            option.addEventListener(
+                "mousedown",
+                event => {
+
+                    /*
+                     Prevent the input from
+                     losing focus before the
+                     selection is completed.
+                    */
+
+                    event.preventDefault();
+
+
+                    input.value =
+                        option.dataset.location;
+
+
+                    suggestions.style.display =
+                        "none";
+
+                }
+            );
+
+        });
+
+
+        /* CLOSE WHEN CLICKING OUTSIDE */
+
+        document.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    !field.contains(
+                        event.target
+                    )
+                ) {
+
+                    suggestions.style.display =
+                        "none";
 
                 }
 
@@ -413,6 +724,12 @@ function setupRideForm() {
         return;
     }
 
+
+    /*
+     IMPORTANT:
+     Location suggestions are initialized
+     here, once, on the Offer a Ride page.
+    */
 
     setupLocationSuggestions();
 
@@ -446,40 +763,52 @@ function setupRideForm() {
 
             const name =
                 document
-                    .getElementById("name")
+                    .getElementById(
+                        "name"
+                    )
                     .value
                     .trim();
 
 
             const from =
                 document
-                    .getElementById("from")
+                    .getElementById(
+                        "from"
+                    )
                     .value
                     .trim();
 
 
             const to =
                 document
-                    .getElementById("to")
+                    .getElementById(
+                        "to"
+                    )
                     .value
                     .trim();
 
 
             const travelMode =
                 document
-                    .getElementById("travelMode")
+                    .getElementById(
+                        "travelMode"
+                    )
                     .value;
 
 
             const date =
                 document
-                    .getElementById("date")
+                    .getElementById(
+                        "date"
+                    )
                     .value;
 
 
             const time =
                 document
-                    .getElementById("time")
+                    .getElementById(
+                        "time"
+                    )
                     .value
                     .trim();
 
@@ -487,38 +816,49 @@ function setupRideForm() {
             const seats =
                 Number(
                     document
-                        .getElementById("seats")
+                        .getElementById(
+                            "seats"
+                        )
                         .value
                 );
 
 
             const costValue =
                 document
-                    .getElementById("cost")
+                    .getElementById(
+                        "cost"
+                    )
                     .value;
 
 
             const cost =
                 costValue === ""
                     ? null
-                    : Number(costValue);
+                    : Number(
+                        costValue
+                    );
 
 
             const whatsapp =
                 document
-                    .getElementById("whatsapp")
+                    .getElementById(
+                        "whatsapp"
+                    )
                     .value
                     .trim();
 
 
             if (
                 whatsapp.length !== 10 ||
-                !/^\d{10}$/.test(whatsapp)
+                !/^\d{10}$/.test(
+                    whatsapp
+                )
             ) {
 
                 alert(
                     "Please enter a valid 10-digit WhatsApp number."
                 );
+
 
                 return;
 
@@ -540,24 +880,34 @@ function setupRideForm() {
 
 
             const {
-                data,
-                error
-            } =
-                await supabaseClient
-                    .rpc(
-                        "create_ride",
-                        {
-                            p_name: name,
-                            p_from: from,
-                            p_to: to,
-                            p_travel_mode: travelMode,
-                            p_ride_date: date,
-                            p_ride_time: time,
-                            p_seats: seats,
-                            p_cost: cost,
-                            p_whatsapp: whatsapp
-                        }
-                    );
+    data,
+    error
+} =
+    await supabaseClient
+        .rpc(
+            "create_ride",
+            {
+                
+                p_organizer_name: name,
+
+                p_from_location: from,
+
+                p_to_location: to,
+
+                p_travel_mode: travelMode,
+
+                p_ride_date: date,
+
+                p_ride_time: time,
+
+                p_available_seats: seats,
+
+                p_cost_per_person: cost,
+
+                p_whatsapp: whatsapp
+            
+            }
+        );
 
 
             if (error) {
@@ -584,114 +934,11 @@ function setupRideForm() {
 
 
             showSuccessModal(
-                data
-            );
+    data.ride_code
+);
 
         }
     );
-
-}
-
-
-
-/* ============================================================
-   LOCATION SUGGESTIONS
-   ============================================================ */
-
-
-function setupLocationSuggestions() {
-
-    const fields =
-        document.querySelectorAll(
-            ".location-field"
-        );
-
-
-    fields.forEach(field => {
-
-        const input =
-            field.querySelector(
-                "input"
-            );
-
-
-        const suggestions =
-            field.querySelector(
-                ".location-suggestions"
-            );
-
-
-        if (!input || !suggestions) {
-            return;
-        }
-
-
-        input.addEventListener(
-            "focus",
-            () => {
-
-                suggestions.style.display =
-                    "block";
-
-            }
-        );
-
-
-        input.addEventListener(
-            "input",
-            () => {
-
-                suggestions.style.display =
-                    "block";
-
-            }
-        );
-
-
-        const options =
-            suggestions.querySelectorAll(
-                ".location-option"
-            );
-
-
-        options.forEach(option => {
-
-            option.addEventListener(
-                "click",
-                () => {
-
-                    input.value =
-                        option.dataset.location;
-
-
-                    suggestions.style.display =
-                        "none";
-
-                    input.focus();
-
-                }
-            );
-
-        });
-
-
-        document.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    !field.contains(event.target)
-                ) {
-
-                    suggestions.style.display =
-                        "none";
-
-                }
-
-            }
-        );
-
-    });
 
 }
 
@@ -745,7 +992,9 @@ function showSuccessModal(
 
 
                 <div class="ride-code">
-                    ${escapeHtml(rideCode)}
+                    ${escapeHtml(
+                        rideCode
+                    )}
                 </div>
 
             </div>
@@ -797,7 +1046,9 @@ function showSuccessModal(
                 try {
 
                     await navigator.clipboard.writeText(
-                        String(rideCode)
+                        String(
+                            rideCode
+                        )
                     );
 
 
@@ -813,7 +1064,9 @@ function showSuccessModal(
 
                 } catch (error) {
 
-                    console.error(error);
+                    console.error(
+                        error
+                    );
 
                 }
 
@@ -858,8 +1111,13 @@ function setupManageRide() {
         );
 
 
-    if (!searchForm || !managePanel) {
+    if (
+        !searchForm ||
+        !managePanel
+    ) {
+
         return;
+
     }
 
 
@@ -878,15 +1136,22 @@ function setupManageRide() {
 
             const code =
                 document
-                    .getElementById("rideCode")
+                    .getElementById(
+                        "rideCode"
+                    )
                     .value
                     .trim();
 
 
-            if (!/^\d{4}$/.test(code)) {
+            if (
+                !/^\d{4}$/.test(
+                    code
+                )
+            ) {
 
                 message.textContent =
                     "Please enter a valid 4-digit Ride Code.";
+
 
                 return;
 
@@ -906,7 +1171,9 @@ function setupManageRide() {
                         "get_ride_by_code",
                         {
                             p_ride_code:
-                                Number(code)
+                                Number(
+                                    code
+                                )
                         }
                     );
 
@@ -919,6 +1186,7 @@ function setupManageRide() {
 
                 message.textContent =
                     "Ride not found. Check your Ride Code.";
+
 
                 return;
 
@@ -953,124 +1221,126 @@ function setupManageRide() {
         );
 
 
-    manageForm.addEventListener(
-        "submit",
-        async event => {
+    if (manageForm) {
 
-            event.preventDefault();
+        manageForm.addEventListener(
+    "submit",
+    async event => {
 
-
-            const code =
-                document
-                    .getElementById("rideCode")
-                    .value
-                    .trim();
+        event.preventDefault();
 
 
-            const updateMessage =
-                document.getElementById(
-                    "manageMessage"
+        const code =
+            document
+                .getElementById(
+                    "rideCode"
+                )
+                .value
+                .trim();
+
+
+        message.textContent =
+            "Saving...";
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .rpc(
+                    "update_ride_by_code",
+                    {
+                        p_ride_code:
+                            Number(code),
+
+                        p_from_location:
+                            document
+                                .getElementById(
+                                    "manageFrom"
+                                )
+                                .value
+                                .trim(),
+
+                        p_to_location:
+                            document
+                                .getElementById(
+                                    "manageTo"
+                                )
+                                .value
+                                .trim(),
+
+                        p_travel_mode:
+                            document
+                                .getElementById(
+                                    "manageMode"
+                                )
+                                .value,
+
+                        p_ride_date:
+                            document
+                                .getElementById(
+                                    "manageDate"
+                                )
+                                .value,
+
+                        p_ride_time:
+                            document
+                                .getElementById(
+                                    "manageTime"
+                                )
+                                .value
+                                .trim(),
+
+                        p_available_seats:
+                            Number(
+                                document
+                                    .getElementById(
+                                        "manageSeats"
+                                    )
+                                    .value
+                            ),
+
+                        p_cost_per_person:
+                            document
+                                .getElementById(
+                                    "manageCost"
+                                )
+                                .value === ""
+                                ? null
+                                : Number(
+                                    document
+                                        .getElementById(
+                                            "manageCost"
+                                        )
+                                        .value
+                                )
+                    }
                 );
 
 
-            updateMessage.textContent =
-                "Saving...";
+        if (error) {
 
-
-            const {
+            console.error(
                 error
-            } =
-                await supabaseClient
-                    .rpc(
-                        "update_ride_by_code",
-                        {
-                            p_ride_code:
-                                Number(code),
-
-                            p_from:
-                                document
-                                    .getElementById(
-                                        "manageFrom"
-                                    )
-                                    .value
-                                    .trim(),
-
-                            p_to:
-                                document
-                                    .getElementById(
-                                        "manageTo"
-                                    )
-                                    .value
-                                    .trim(),
-
-                            p_travel_mode:
-                                document
-                                    .getElementById(
-                                        "manageMode"
-                                    )
-                                    .value,
-
-                            p_ride_date:
-                                document
-                                    .getElementById(
-                                        "manageDate"
-                                    )
-                                    .value,
-
-                            p_ride_time:
-                                document
-                                    .getElementById(
-                                        "manageTime"
-                                    )
-                                    .value
-                                    .trim(),
-
-                            p_seats:
-                                Number(
-                                    document
-                                        .getElementById(
-                                            "manageSeats"
-                                        )
-                                        .value
-                                ),
-
-                            p_cost:
-                                document
-                                    .getElementById(
-                                        "manageCost"
-                                    )
-                                    .value === ""
-                                    ? null
-                                    : Number(
-                                        document
-                                            .getElementById(
-                                                "manageCost"
-                                            )
-                                            .value
-                                    )
-                        }
-                    );
+            );
 
 
-            if (error) {
-
-                console.error(error);
-
-
-                updateMessage.textContent =
-                    "Couldn't save changes. Please try again.";
+            message.textContent =
+                "Couldn't save changes. Please try again.";
 
 
-                return;
-
-            }
-
-
-            updateMessage.textContent =
-                "Changes saved ✓";
+            return;
 
         }
-    );
+
+
+        message.textContent =
+            "Changes saved ✓";
+
+    }
+);
+
+    }
 
 
     const cancelButton =
@@ -1079,65 +1349,75 @@ function setupManageRide() {
         );
 
 
-    cancelButton.addEventListener(
-        "click",
-        async () => {
+    if (cancelButton) {
 
-            const code =
-                document
-                    .getElementById("rideCode")
-                    .value
-                    .trim();
+        cancelButton.addEventListener(
+            "click",
+            async () => {
 
-
-            const confirmed =
-                confirm(
-                    "Are you sure you want to cancel this ride?"
-                );
+                const code =
+                    document
+                        .getElementById(
+                            "rideCode"
+                        )
+                        .value
+                        .trim();
 
 
-            if (!confirmed) {
-                return;
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient
-                    .rpc(
-                        "cancel_ride_by_code",
-                        {
-                            p_ride_code:
-                                Number(code)
-                        }
+                const confirmed =
+                    confirm(
+                        "Are you sure you want to cancel this ride?"
                     );
 
 
-            if (error) {
-
-                console.error(error);
-
-
-                message.textContent =
-                    "Couldn't cancel the ride. Please try again.";
+                if (!confirmed) {
+                    return;
+                }
 
 
-                return;
+                const {
+                    error
+                } =
+                    await supabaseClient
+                        .rpc(
+                            "cancel_ride_by_code",
+                            {
+                                p_ride_code:
+                                    Number(
+                                        code
+                                    )
+                            }
+                        );
+
+
+                if (error) {
+
+                    console.error(
+                        error
+                    );
+
+
+                    message.textContent =
+                        "Couldn't cancel the ride. Please try again.";
+
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Ride cancelled."
+                );
+
+
+                window.location.href =
+                    "index.html";
 
             }
+        );
 
-
-            alert(
-                "Ride cancelled."
-            );
-
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
+    }
 
 }
 
@@ -1200,12 +1480,17 @@ function populateManageForm(
             ride.ride_time;
 
 
+    /*
+     Your database column is
+     available_seats.
+    */
+
     document
         .getElementById(
             "manageSeats"
         )
         .value =
-            ride.seats;
+            ride.available_seats;
 
 
     document
@@ -1273,9 +1558,11 @@ function setupFeedback() {
 
                 options.forEach(
                     item => {
+
                         item.classList.remove(
                             "selected"
                         );
+
                     }
                 );
 
@@ -1294,15 +1581,22 @@ function setupFeedback() {
     });
 
 
-    textarea.addEventListener(
-        "input",
-        () => {
+    if (
+        textarea &&
+        characterCount
+    ) {
 
-            characterCount.textContent =
-                textarea.value.length;
+        textarea.addEventListener(
+            "input",
+            () => {
 
-        }
-    );
+                characterCount.textContent =
+                    textarea.value.length;
+
+            }
+        );
+
+    }
 
 
     form.addEventListener(
@@ -1321,6 +1615,7 @@ function setupFeedback() {
                 status.textContent =
                     "Pick an option first.";
 
+
                 return;
 
             }
@@ -1331,7 +1626,9 @@ function setupFeedback() {
                 status.textContent =
                     "Tell us a little more.";
 
+
                 textarea.focus();
+
 
                 return;
 
@@ -1374,7 +1671,9 @@ function setupFeedback() {
 
             if (error) {
 
-                console.error(error);
+                console.error(
+                    error
+                );
 
 
                 submitButton.disabled =
@@ -1387,6 +1686,7 @@ function setupFeedback() {
 
                 status.textContent =
                     "Couldn't send that. Please try again.";
+
 
                 return;
 

@@ -857,19 +857,15 @@ textarea {
 
 
 .organizer {
+    display: inline;
+    color: #7B7690;
+    font-size: 14px;
+    margin-left: 8px;
+}
 
-    display:
-        block;
-
-    margin-top:
-        3px;
-
-    color:
-        var(--muted);
-
-    font-size:
-        0.75rem;
-
+.organizer strong {
+    color: #332B63;
+    font-weight: 700;
 }
 
 
@@ -2330,4 +2326,85 @@ footer {
 
     }
 
+}
+
+.ride-price-organizer {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.ride-price {
+    color: #332B63;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.organizer {
+    color: #7B7690;
+    font-size: 14px;
+}
+
+.organizer strong {
+    color: #332B63;
+    font-weight: 700;
+}
+
+/* RIDE POSTER */
+
+.ride-poster {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+}
+
+.ride-price {
+    color: #332B63;
+    font-size: 18px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.posted-by {
+    color: #7B7690;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.posted-by strong {
+    color: #332B63;
+    font-weight: 700;
+}
+
+/* RIDE POSTER */
+
+.ride-poster {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.ride-price {
+    color: #332B63;
+    font-size: 17px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.posted-by {
+    color: #7B7690;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.posted-by strong {
+    display: inline !important;
+    color: #332B63;
+    font-weight: 700;
+    white-space: nowrap;
 }
