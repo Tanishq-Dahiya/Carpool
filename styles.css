@@ -2086,12 +2086,7 @@ footer {
     }
 
 
-    .header-link {
-
-        display:
-            none;
-
-    }
+    
 
 
     .header-actions .btn {
@@ -2274,30 +2269,36 @@ footer {
 
     .footer-inner {
 
-        flex-direction:
-            column;
+    flex-direction:
+        row;
 
-        align-items:
-            flex-start;
+    align-items:
+        flex-start;
 
-        gap:
-            22px;
+    justify-content:
+        space-between;
 
-    }
+    gap:
+        20px;
+
+}
 
 
-    .footer-links {
+.footer-links {
 
-        width:
-            100%;
+    width:
+        auto;
 
-        flex-wrap:
-            wrap;
+    flex-direction:
+        column;
 
-        gap:
-            10px 20px;
+    align-items:
+        flex-end;
 
-    }
+    gap:
+        10px;
+
+}
 
 
     .footer-link {
