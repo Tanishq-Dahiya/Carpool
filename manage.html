@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Ride · sastimasti →</title>
+
+    <link
+        rel="stylesheet"
+        href="styles.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="site-header">
+
+    <div class="container header-inner">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+            <span>sastimasti</span>
+            <span class="logo-arrow">→</span>
+        </a>
+
+
+        <div class="header-actions">
+
+            <a
+                href="offer.html"
+                class="btn btn-primary"
+            >
+                Offer a Ride →
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main class="form-page">
+
+    <div class="container form-container">
+
+
+        <div class="page-heading">
+
+            <div class="small-brand">
+                sastimasti →
+            </div>
+
+
+            <h1>
+                Your ride.
+            </h1>
+
+
+            <p>
+                Enter your Ride Code to make changes or cancel your ride.
+            </p>
+
+        </div>
+
+
+
+        <div class="form-card manage-search-card">
+
+            <form id="manageSearchForm">
+
+                <div class="form-group">
+
+                    <label for="rideCode">
+                        Ride Code
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="rideCode"
+                        name="rideCode"
+                        inputmode="numeric"
+                        maxlength="4"
+                        placeholder="Enter your 4-digit code"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                >
+                    Find My Ride →
+                </button>
+
+            </form>
+
+        </div>
+
+
+
+        <div
+            id="managePanel"
+            class="form-card manage-panel"
+            style="display: none;"
+        >
+
+            <div class="manage-code">
+
+                <span>
+                    Ride Code
+                </span>
+
+
+                <strong id="displayRideCode">
+                    ----
+                </strong>
+
+            </div>
+
+
+
+            <form id="manageRideForm">
+
+
+                <div class="form-group">
+
+                    <label for="manageFrom">
+                        From
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="manageFrom"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="manageTo">
+                        Going to
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="manageTo"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="manageMode">
+                        Travelling by
+                    </label>
+
+
+                    <select
+                        id="manageMode"
+                        required
+                    >
+
+                        <option value="cab">
+                            🚕 Cab
+                        </option>
+
+
+                        <option value="self-drive">
+                            🚗 Self-drive
+                        </option>
+
+
+                        <option value="auto">
+                            🛺 Auto
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="manageDate">
+                            Date
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="manageDate"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="manageTime">
+                            Departure time
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="manageTime"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="manageSeats">
+                            Available seats
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="manageSeats"
+                            min="1"
+                            max="6"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="manageCost">
+                            Contribution per person
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="manageCost"
+                            min="0"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                >
+                    Save Changes →
+                </button>
+
+
+                <p
+                    id="manageMessage"
+                    class="manage-message"
+                ></p>
+
+
+                <button
+                    type="button"
+                    id="cancelRideBtn"
+                    class="cancel-btn"
+                >
+                    Cancel Ride
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <div class="container footer-inner">
+
+
+        <div class="footer-left">
+
+            <div class="footer-brand">
+                sastimasti →
+            </div>
+
+
+            <div class="footer-credit">
+                Built by Tanishq
+            </div>
+
+        </div>
+
+
+
+        <div class="footer-links">
+
+            <a
+                href="offer.html"
+                class="footer-link"
+            >
+                Offer a Ride
+            </a>
+
+
+            <a
+                href="manage.html"
+                class="footer-link"
+            >
+                My Ride
+            </a>
+
+
+            <a
+                href="help.html"
+                class="footer-link"
+            >
+                Help &amp; feedback
+            </a>
+
+        </div>
+
+
+    </div>
+
+</footer>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script src="script.js?v=16"></script>
+
+
+</body>
+
+</html>

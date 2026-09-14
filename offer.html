@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Offer a Ride · sastimasti →</title>
+
+    <link
+        rel="stylesheet"
+        href="styles.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="site-header">
+
+    <div class="container header-inner">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+            <span>sastimasti</span>
+            <span class="logo-arrow">→</span>
+        </a>
+
+
+        <div class="header-actions">
+
+            <a
+                href="manage.html"
+                class="header-link"
+            >
+                My Ride
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main class="form-page">
+
+    <div class="container form-container">
+
+
+        <div class="page-heading">
+
+            <div class="small-brand">
+                sastimasti →
+            </div>
+
+
+            <h1>
+                Where are we going?
+            </h1>
+
+
+            <p>
+                Tell us about your ride. We'll take care of the rest.
+            </p>
+
+        </div>
+
+
+
+        <div class="form-card">
+
+
+            <form id="rideForm">
+
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Your name
+                        <span>*</span>
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="e.g. Rakhi Sawant"
+                        autocomplete="name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group location-field">
+
+                    <label for="from">
+                        From
+                        <span>*</span>
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="from"
+                        name="from"
+                        placeholder="e.g. NMIMS Campus"
+                        autocomplete="off"
+                        required
+                    >
+
+
+                    <div
+                        id="fromSuggestions"
+                        class="location-suggestions"
+                    >
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="from"
+                            data-location="NMIMS Campus"
+                        >
+                            <span>⌖</span>
+                            <span>NMIMS Campus</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="from"
+                            data-location="Hyderabad"
+                        >
+                            <span>⌖</span>
+                            <span>Hyderabad</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="from"
+                            data-location="Hyderabad Airport"
+                        >
+                            <span>⌖</span>
+                            <span>Hyderabad Airport</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="from"
+                            data-location="Jadcherla"
+                        >
+                            <span>⌖</span>
+                            <span>Jadcherla</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group location-field">
+
+                    <label for="to">
+                        Going to
+                        <span>*</span>
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="to"
+                        name="to"
+                        placeholder="e.g. Hyderabad"
+                        autocomplete="off"
+                        required
+                    >
+
+
+                    <div
+                        id="toSuggestions"
+                        class="location-suggestions"
+                    >
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="to"
+                            data-location="NMIMS Campus"
+                        >
+                            <span>⌖</span>
+                            <span>NMIMS Campus</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="to"
+                            data-location="Hyderabad"
+                        >
+                            <span>⌖</span>
+                            <span>Hyderabad</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="to"
+                            data-location="Hyderabad Airport"
+                        >
+                            <span>⌖</span>
+                            <span>Hyderabad Airport</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="location-option"
+                            data-target="to"
+                            data-location="Jadcherla"
+                        >
+                            <span>⌖</span>
+                            <span>Jadcherla</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="travelMode">
+                        Travelling by
+                        <span>*</span>
+                    </label>
+
+
+                    <select
+                        id="travelMode"
+                        name="travelMode"
+                        required
+                    >
+
+                        <option value="">
+                            Select one
+                        </option>
+
+
+                        <option value="cab">
+                            🚕 Cab
+                        </option>
+
+
+                        <option value="self-drive">
+                            🚗 Self-drive
+                        </option>
+
+
+                        <option value="auto">
+                            🛺 Auto
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="date">
+                            Date
+                            <span>*</span>
+                        </label>
+
+
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="time">
+                            Departure time
+                            <span>*</span>
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="time"
+                            name="time"
+                            placeholder="e.g. 10:30 AM"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="seats">
+                            Available seats
+                            <span>*</span>
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="seats"
+                            name="seats"
+                            min="1"
+                            max="6"
+                            placeholder="e.g. 3"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="cost">
+                            Contribution per person
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="cost"
+                            name="cost"
+                            min="0"
+                            placeholder="e.g. 500"
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="whatsapp">
+                        WhatsApp number
+                        <span>*</span>
+                    </label>
+
+
+                    <input
+                        type="tel"
+                        id="whatsapp"
+                        name="whatsapp"
+                        inputmode="numeric"
+                        maxlength="10"
+                        placeholder="10-digit mobile number"
+                        autocomplete="tel"
+                        required
+                    >
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                >
+                    Post Ride →
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <div class="container footer-inner">
+
+
+        <div class="footer-left">
+
+            <div class="footer-brand">
+                sastimasti →
+            </div>
+
+
+            <div class="footer-credit">
+                Built by Tanishq
+            </div>
+
+        </div>
+
+
+
+        <div class="footer-links">
+
+            <a
+                href="offer.html"
+                class="footer-link"
+            >
+                Offer a Ride
+            </a>
+
+
+            <a
+                href="manage.html"
+                class="footer-link"
+            >
+                My Ride
+            </a>
+
+
+            <a
+                href="help.html"
+                class="footer-link"
+            >
+                Help &amp; feedback
+            </a>
+
+        </div>
+
+
+    </div>
+
+</footer>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script src="script.js?v=16"></script>
+
+
+</body>
+
+</html>
