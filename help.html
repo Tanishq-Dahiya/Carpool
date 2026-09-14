@@ -1,1 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Help &amp; feedback · sastimasti →</title>
+
+    <link
+        rel="stylesheet"
+        href="styles.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="site-header">
+
+    <div class="container header-inner">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+            <span>sastimasti</span>
+            <span class="logo-arrow">→</span>
+        </a>
+
+
+        <div class="header-actions">
+
+            <a
+                href="manage.html"
+                class="header-link"
+            >
+                My Ride
+            </a>
+
+
+            <a
+                href="offer.html"
+                class="btn btn-primary"
+            >
+                Offer a Ride →
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main class="form-page">
+
+    <div class="container form-container">
+
+
+        <div class="page-heading">
+
+            <div class="small-brand">
+                sastimasti →
+            </div>
+
+
+            <h1>
+                Something on your mind?
+            </h1>
+
+
+            <p>
+                Tell us what's up. We're listening.
+            </p>
+
+        </div>
+
+
+
+        <div class="form-card">
+
+
+            <form id="feedbackForm">
+
+
+                <!-- CATEGORY -->
+
+                <div class="form-group">
+
+                    <label>
+                        What's it about?
+                    </label>
+
+
+                    <div class="feedback-options">
+
+
+                        <button
+                            type="button"
+                            class="feedback-option"
+                            data-category="Something isn't working"
+                        >
+
+                            <strong>
+                                Something isn't working →
+                            </strong>
+
+                            <span>
+                                For bugs or things that aren't behaving properly.
+                            </span>
+
+                        </button>
+
+
+
+                        <button
+                            type="button"
+                            class="feedback-option"
+                            data-category="I have a suggestion"
+                        >
+
+                            <strong>
+                                I have a suggestion →
+                            </strong>
+
+                            <span>
+                                Tell us what would make sastimasti better.
+                            </span>
+
+                        </button>
+
+
+
+                        <button
+                            type="button"
+                            class="feedback-option"
+                            data-category="Report a ride"
+                        >
+
+                            <strong>
+                                Report a ride →
+                            </strong>
+
+                            <span>
+                                For a ride that looks wrong, suspicious, or is no longer available.
+                            </span>
+
+                        </button>
+
+
+
+                        <button
+                            type="button"
+                            class="feedback-option"
+                            data-category="Something else"
+                        >
+
+                            <strong>
+                                Something else →
+                            </strong>
+
+                            <span>
+                                Anything else you want us to know.
+                            </span>
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MESSAGE -->
+
+                <div class="form-group">
+
+                    <label for="feedbackMessage">
+                        Tell us about it
+                    </label>
+
+
+                    <textarea
+                        id="feedbackMessage"
+                        name="message"
+                        rows="6"
+                        maxlength="2000"
+                        placeholder="Tell us about it..."
+                        required
+                    ></textarea>
+
+
+                    <div class="character-count">
+                        <span id="characterCount">0</span> / 2000
+                    </div>
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary submit-btn"
+                >
+                    Send →
+                </button>
+
+
+                <p
+                    id="feedbackMessageStatus"
+                    class="manage-message"
+                ></p>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <div class="container footer-inner">
+
+
+        <div class="footer-left">
+
+            <div class="footer-brand">
+                sastimasti →
+            </div>
+
+
+            <div class="footer-credit">
+                Built by Tanishq
+            </div>
+
+        </div>
+
+
+
+        <div class="footer-links">
+
+            <a
+                href="offer.html"
+                class="footer-link"
+            >
+                Offer a Ride
+            </a>
+
+
+            <a
+                href="manage.html"
+                class="footer-link"
+            >
+                My Ride
+            </a>
+
+
+            <a
+                href="help.html"
+                class="footer-link"
+            >
+                Help &amp; feedback
+            </a>
+
+        </div>
+
+
+    </div>
+
+</footer>
+
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script src="script.js?v=16"></script>
+
+
+</body>
+
+</html>
