@@ -27,6 +27,17 @@ const supabaseClient =
    HELPERS
    ============================================================ */
 
+async function trackEvent(eventName, rideId = null, page = window.location.pathname) {
+    try {
+        await supabaseClient.rpc("track_event", {
+            p_event_name: eventName,
+            p_ride_id: rideId,
+            p_page: page
+        });
+    } catch (error) {
+        console.error("Analytics error:", error);
+    }
+}
 
 function escapeHtml(value) {
 
@@ -551,6 +562,8 @@ function setupWhatsAppButtons() {
 
 
                 if (data) {
+
+                    await trackEvent("whatsapp_click", rideId);
 
                     const whatsappUrl =
                         `${data}${data.includes("?") ? "&" : "?"}text=${encodeURIComponent(
@@ -1732,6 +1745,8 @@ document.addEventListener(
     () => {
 
         setupFooter();
+
+        trackEvent("page_view");
 
         loadRides();
 
